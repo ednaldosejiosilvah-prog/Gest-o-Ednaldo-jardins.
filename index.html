@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07150d">
+<link rel="manifest" href="manifest.json">
+<title>Ednaldo Jardins Gestão</title>
+<style>
+:root{--bg:#07110b;--p:#102319;--p2:#16321f;--gold:#d5a84b;--gold2:#f0c96a;--green:#35b86a;--text:#f4f7f4;--muted:#9caf9f;--line:#284a34;--red:#ef6b6b;--blue:#70a7ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,var(--bg),#0c1c12);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+header{position:sticky;top:0;z-index:10;padding:10px 14px;background:#07110bf5;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.brand{display:flex;gap:10px;align-items:center}.logo{width:52px;height:52px;border-radius:12px;overflow:hidden;border:1px solid #718c42;background:#102319}.logo img{width:100%;height:100%;object-fit:cover}.brand b{font-size:17px}.brand small{display:block;color:var(--muted)}
+nav{display:flex;gap:6px;overflow:auto;padding:9px 10px;background:#0a170e;border-bottom:1px solid var(--line);position:sticky;top:73px;z-index:9}button{border:1px solid var(--line);background:var(--p);color:var(--text);padding:10px 12px;border-radius:10px;font-weight:650;cursor:pointer}button:hover{border-color:var(--gold)}button.primary{background:linear-gradient(135deg,#b88931,#e2bd5e);color:#10160f;border:0}button.danger{color:#ff9b9b}.tab-on{border-color:var(--gold);color:var(--gold2)}
+main{max-width:1300px;margin:auto;padding:20px 13px 60px}.view{display:none}.view.active{display:block}h1{margin:0 0 4px;font-size:27px}.sub{color:var(--muted);margin:0 0 15px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:linear-gradient(145deg,var(--p),#0d1e14);border:1px solid var(--line);border-radius:16px;padding:15px;margin-top:12px}.metric b{font-size:23px;display:block;margin-top:7px}.green{color:#72df9a}.red{color:#ff9999}.gold{color:var(--gold2)}.blue{color:#8ab7ff}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summary strong{display:block;font-size:19px;margin-top:5px}
+.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select,textarea{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#08150d;color:var(--text);outline:none}textarea{min-height:72px;resize:vertical}.full{grid-column:1/-1}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:13px;margin-top:12px}.table{width:100%;min-width:760px;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.table th{background:#0d2115;color:var(--gold2)}.empty{text-align:center;padding:24px;color:var(--muted)}
+.badge{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px}.check{accent-color:var(--green);width:18px;height:18px}.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:15px;z-index:30}.modal.show{display:flex}.modalbox{max-width:620px;width:100%;background:#0c1c12;border:1px solid var(--gold);border-radius:18px;padding:18px;max-height:90vh;overflow:auto}.close{float:right}.toast{position:fixed;right:15px;bottom:15px;background:#173a24;border:1px solid var(--green);padding:12px 15px;border-radius:12px;display:none;z-index:50}.toast.show{display:block}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+@media(max-width:850px){.grid,.summary{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.grid,.summary,.formgrid{grid-template-columns:1fr}.full{grid-column:auto}h1{font-size:23px}nav{top:73px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo"><img src="logo.jpg" alt="Ednaldo Jardins"></div><div><b>Ednaldo Jardins Gestão</b><small>Clientes • Agenda • Financeiro • Combustível</small></div></div></header>
+<nav id="nav">
+<button data-v="home" onclick="show('home')">Início</button><button data-v="clientes" onclick="show('clientes')">Clientes</button><button data-v="agenda" onclick="show('agenda')">Agenda</button><button data-v="financeiro" onclick="show('financeiro')">Financeiro</button><button data-v="tarefas" onclick="show('tarefas')">Tarefas</button><button data-v="relatorios" onclick="show('relatorios')">Relatórios</button><button data-v="dados" onclick="show('dados')">Dados</button>
+</nav>
+<main>
+
+<section id="home" class="view active">
+<h1>Painel</h1><p class="sub">Tudo do negócio em um só lugar.</p>
+<div class="grid">
+<div class="card metric"><span>Clientes</span><b id="mClientes">0</b></div>
+<div class="card metric"><span>Serviços futuros</span><b id="mServicos">0</b></div>
+<div class="card metric"><span>A receber</span><b class="gold" id="mReceber">R$ 0,00</b></div>
+<div class="card metric"><span>Saldo</span><b class="green" id="mSaldo">R$ 0,00</b></div>
+</div>
+<div class="actions"><button class="primary" onclick="novoCliente()">＋ Cliente</button><button class="primary" onclick="novoServico()">＋ Serviço</button><button class="primary" onclick="novoFin('entrada')">＋ Entrada</button><button onclick="novoFin('saida')">− Saída</button><button onclick="novoFin('combustivel')">⛽ Combustível</button><button onclick="novoTarefa()">＋ Tarefa</button></div>
+<div class="card"><h3>Resumo do mês</h3>
+<div class="formgrid">
+<div><label>Mês para visualizar</label><input id="mesSelecionado" type="month" onchange="renderAll()"></div>
+<div><label>Período</label><input id="periodoAtual" readonly></div>
+</div>
+<div class="summary" style="margin-top:10px">
+<div><span>Entradas do mês</span><strong class="green" id="mesE">R$ 0,00</strong></div>
+<div><span>Saídas do mês</span><strong class="red" id="mesS">R$ 0,00</strong></div>
+<div><span>Combustível do mês</span><strong class="gold" id="mesC">R$ 0,00</strong></div>
+<div><span>Saldo do mês</span><strong id="mesR">R$ 0,00</strong></div>
+</div></div>
+<div class="card"><h3>Resumo financeiro</h3><div class="summary">
+<div><span>Entradas</span><strong class="green" id="hE">R$ 0,00</strong></div><div><span>Saídas</span><strong class="red" id="hS">R$ 0,00</strong></div><div><span>Combustível</span><strong class="gold" id="hC">R$ 0,00</strong></div><div><span>Resultado</span><strong id="hR">R$ 0,00</strong></div>
+</div></div>
+<div class="card"><h3>Histórico mensal</h3>
+<div class="tablewrap"><table class="table"><thead><tr><th>Mês</th><th>Entradas</th><th>Saídas</th><th>Combustível</th><th>Saldo</th></tr></thead><tbody id="historicoMensal"></tbody></table></div></div>
+<div class="card"><h3>Próximos serviços</h3><div id="proximos"></div></div>
+</section>
+
+<section id="clientes" class="view"><h1>Clientes</h1><p class="sub">Cadastro, contato e valor de cada cliente.</p>
+<div class="card"><form id="clienteForm" class="formgrid"><input type="hidden" id="cid">
+<div><label>Nome *</label><input id="cn" required></div><div><label>Telefone</label><input id="ct"></div><div><label>Endereço</label><input id="ce"></div><div><label>Valor mensal</label><input id="cv" type="number" step=".01"></div><div><label>Frequência</label><select id="cfreq"><option>Semanal</option><option>Quinzenal</option><option>Mensal</option><option>Avulso</option></select></div><div><label>Status</label><select id="cstatus"><option>Ativo</option><option>Inativo</option></select></div><div class="full"><label>Observações</label><textarea id="co"></textarea></div><button class="primary">Salvar cliente</button><button type="button" onclick="limparCliente()">Limpar</button></form></div>
+<div class="card"><input id="cBusca" placeholder="Pesquisar cliente..." oninput="renderClientes()"></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>Cliente</th><th>Telefone</th><th>Endereço</th><th>Valor</th><th>Frequência</th><th>Status</th><th>Ações</th></tr></thead><tbody id="ctab"></tbody></table></div></section>
+
+<section id="agenda" class="view"><h1>Agenda</h1><p class="sub">Agende, conclua ou cancele serviços.</p>
+<div class="card"><form id="agendaForm" class="formgrid"><input type="hidden" id="aid">
+<div><label>Data *</label><input id="ad" type="date" required></div><div><label>Horário</label><input id="ah" type="time"></div><div><label>Cliente *</label><input id="ac" list="clientesList" required><datalist id="clientesList"></datalist></div>
+<div><label>Serviço *</label><input id="as" required></div><div><label>Valor</label><input id="av" type="number" step=".01"></div><div><label>Status</label><select id="ast"><option>Agendado</option><option>Concluído</option><option>Cancelado</option></select></div>
+<div class="full"><label>Observação</label><textarea id="ao"></textarea></div><button class="primary">Salvar serviço</button><button type="button" onclick="limparAgenda()">Limpar</button></form></div>
+<div class="toolbar card"><input id="aBusca" placeholder="Pesquisar serviço ou cliente..." oninput="renderAgenda()"></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>Data</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="atab"></tbody></table></div></section>
+
+<section id="financeiro" class="view"><h1>Financeiro</h1><p class="sub">Entradas, despesas e combustível com cálculo automático.</p>
+<div class="summary"><div class="card"><span>Entradas</span><strong class="green" id="fE">R$ 0,00</strong></div><div class="card"><span>Saídas</span><strong class="red" id="fS">R$ 0,00</strong></div><div class="card"><span>Combustível</span><strong class="gold" id="fC">R$ 0,00</strong></div><div class="card"><span>Saldo</span><strong id="fR">R$ 0,00</strong></div></div>
+<div class="actions"><button class="primary" onclick="novoFin('entrada')">＋ Entrada</button><button onclick="novoFin('saida')">− Saída</button><button onclick="novoFin('combustivel')">⛽ Combustível</button></div>
+<div class="card"><form id="finForm" class="formgrid"><input type="hidden" id="fid">
+<div><label>Tipo *</label><select id="ft" onchange="toggleComb()"><option value="entrada">Entrada</option><option value="saida">Saída</option><option value="combustivel">Combustível</option></select></div>
+<div><label>Data *</label><input id="fd" type="date" required></div><div><label>Descrição *</label><input id="fx" required></div><div><label>Valor total (R$) *</label><input id="fv" type="number" step=".01" min="0" required></div>
+<div id="litrosBox"><label>Litros</label><input id="fl" type="number" step=".01" min="0" oninput="calcComb()"></div><div id="precoBox"><label>Preço por litro</label><input id="fp" type="number" step=".001" min="0" oninput="calcComb()"></div>
+<div><label>Veículo</label><input id="fvcl" placeholder="Ex.: Strada"></div><div><label>Categoria</label><select id="fcat"><option>Serviço</option><option>Material</option><option>Ferramenta</option><option>Combustível</option><option>Manutenção</option><option>Outro</option></select></div>
+<div><label>Pagamento</label><select id="fpg"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option><option>Outro</option></select></div>
+<div class="full"><label>Observação</label><textarea id="fo"></textarea></div><button class="primary">Salvar lançamento</button><button type="button" onclick="limparFin()">Limpar</button></form></div>
+<div class="card"><input id="fBusca" placeholder="Pesquisar lançamento..." oninput="renderFin()"></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Detalhes</th><th>Ações</th></tr></thead><tbody id="ftab"></tbody></table></div></section>
+
+<section id="tarefas" class="view"><h1>Tarefas</h1><p class="sub">Controle de lembretes e prioridades.</p>
+<div class="card"><form id="taskForm" class="formgrid"><input type="hidden" id="tid"><div><label>Tarefa *</label><input id="tt" required></div><div><label>Data</label><input id="td" type="date"></div><div><label>Prioridade</label><select id="tp"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div><div class="full"><label>Observação</label><textarea id="to"></textarea></div><button class="primary">Salvar tarefa</button><button type="button" onclick="limparTarefa()">Limpar</button></form></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>✓</th><th>Tarefa</th><th>Data</th><th>Prioridade</th><th>Status</th><th>Ações</th></tr></thead><tbody id="ttab"></tbody></table></div></section>
+
+<section id="relatorios" class="view"><h1>Relatórios</h1><p class="sub">Veja os números e gere relatórios do período.</p>
+<div class="card"><div class="formgrid"><div><label>Início</label><input id="ri" type="date"></div><div><label>Fim</label><input id="rf" type="date"></div><button class="primary" onclick="gerarRelatorio()">Atualizar relatório</button></div></div>
+<div id="relatorio"></div>
+</section>
+
+<section id="dados" class="view"><h1>Dados</h1><p class="sub">Backup, restauração e segurança dos seus dados.</p>
+<div class="card"><h3>Backup</h3><div class="actions"><button class="primary" onclick="backup()">⬇ Exportar backup</button><label style="border:1px solid var(--line);padding:10px 12px;border-radius:10px;cursor:pointer">⬆ Importar backup<input type="file" accept=".json" onchange="restore(event)" style="display:none"></label></div><p class="sub">Recomendação: faça um backup toda semana.</p></div>
+<div class="card"><h3>Dados armazenados</h3><div id="dadosInfo"></div></div>
+<div class="card"><h3>Apagar dados</h3><p class="sub">Use somente se quiser começar novamente.</p><button class="danger" onclick="clearAll()">Excluir todos os dados</button></div>
+</section>
+
+<div class="card">
+  <div class="card-title">Serviços realizados por mês</div>
+  <div class="muted">Selecione um mês para visualizar os serviços daquele período. O histórico permanece salvo.</div>
+  <div class="row" style="margin-top:10px">
+    <label>Mês
+      <input type="month" id="mesServicos" onchange="renderServicosMensais()">
+    </label>
+    <div class="stat"><b id="qtdServicosMes">0</b><span>Serviços no mês</span></div>
+    <div class="stat"><b id="valorServicosMes">R$ 0,00</b><span>Valor dos serviços</span></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Status</th><th>Valor</th>
+        </tr>
+      </thead>
+      <tbody id="servicosMensaisBody"></tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+<footer>Ednaldo Jardins Gestão • Sistema de gestão de jardinagem</footer>
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='ednaldo_jardins_gestao_v3';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"clientes":[],"agenda":[],"financeiro":[],"tarefas":[]}');
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const brl=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));renderAll();toast('Salvo com sucesso!')}
+function toast(t){let x=$('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+function show(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('tab-on',x.dataset.v===id));renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+function total(t){return db.financeiro.filter(x=>x.tipo===t).reduce((a,x)=>a+Number(x.valor||0),0)}
+function novoCliente(){show('clientes');limparCliente();$('cn').focus()}
+function limparCliente(){ $('clienteForm').reset();$('cid').value='';$('cstatus').value='Ativo';$('cfreq').value='Mensal' }
+$('clienteForm').onsubmit=e=>{e.preventDefault();let i=$('cid').value||uid(),x={id:i,nome:$('cn').value.trim(),tel:$('ct').value.trim(),end:$('ce').value.trim(),valor:Number($('cv').value||0),freq:$('cfreq').value,status:$('cstatus').value,obs:$('co').value.trim()},n=db.clientes.findIndex(a=>a.id===i);n>=0?db.clientes[n]=x:db.clientes.push(x);limparCliente();persist()}
+function renderClientes(){let q=($('cBusca')?.value||'').toLowerCase();let a=db.clientes.filter(x=>(x.nome+' '+x.tel+' '+x.end).toLowerCase().includes(q));$('ctab').innerHTML=a.length?a.map(x=>`<tr><td><b>${esc(x.nome)}</b></td><td>${esc(x.tel)}</td><td>${esc(x.end)}</td><td>${brl(x.valor)}</td><td>${esc(x.freq)}</td><td>${esc(x.status)}</td><td><button onclick="editCliente('${x.id}')">Editar</button> <button class="danger" onclick="removeItem('clientes','${x.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="7" class="empty">Nenhum cliente encontrado.</td></tr>';$('clientesList').innerHTML=db.clientes.map(x=>`<option value="${esc(x.nome)}">`).join('')}
+function editCliente(i){let x=db.clientes.find(a=>a.id===i);show('clientes');$('cid').value=i;$('cn').value=x.nome;$('ct').value=x.tel;$('ce').value=x.end;$('cv').value=x.valor;$('cfreq').value=x.freq||'Mensal';$('cstatus').value=x.status||'Ativo';$('co').value=x.obs||'';window.scrollTo(0,0)}
+function novoServico(){show('agenda');limparAgenda();$('ad').value=today();$('ac').focus()}
+function limparAgenda(){$('agendaForm').reset();$('aid').value='';$('ast').value='Agendado'}
+$('agendaForm').onsubmit=e=>{e.preventDefault();let i=$('aid').value||uid(),x={id:i,data:$('ad').value,hora:$('ah').value,cliente:$('ac').value.trim(),servico:$('as').value.trim(),valor:Number($('av').value||0),status:$('ast').value,obs:$('ao').value.trim()},n=db.agenda.findIndex(a=>a.id===i);n>=0?db.agenda[n]=x:db.agenda.push(x);limparAgenda();persist()}
+function renderAgenda(){let q=($('aBusca')?.value||'').toLowerCase();let a=[...db.agenda].filter(x=>(x.cliente+' '+x.servico+' '+x.status).toLowerCase().includes(q)).sort((x,y)=>(x.data+x.hora).localeCompare(y.data+y.hora));$('atab').innerHTML=a.length?a.map(x=>`<tr><td>${x.data} ${x.hora||''}</td><td>${esc(x.cliente)}</td><td>${esc(x.servico)}</td><td>${brl(x.valor)}</td><td><span class="badge">${esc(x.status)}</span></td><td><button onclick="editAgenda('${x.id}')">Editar</button> <button onclick="concluirAgenda('${x.id}')">Concluir</button> <button class="danger" onclick="removeItem('agenda','${x.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">Nenhum serviço encontrado.</td></tr>'}
+function editAgenda(i){let x=db.agenda.find(a=>a.id===i);show('agenda');$('aid').value=i;$('ad').value=x.data;$('ah').value=x.hora;$('ac').value=x.cliente;$('as').value=x.servico;$('av').value=x.valor;$('ast').value=x.status;$('ao').value=x.obs||''}
+function concluirAgenda(i){let x=db.agenda.find(a=>a.id===i);x.status='Concluído';if(x.valor>0&&!db.financeiro.some(f=>f.origemAgenda===i)){db.financeiro.push({id:uid(),tipo:'entrada',data:x.data,desc:'Pagamento - '+x.cliente+' - '+x.servico,valor:x.valor,litros:0,preco:0,veiculo:'',categoria:'Serviço',pag:'',obs:'Gerado ao concluir serviço',origemAgenda:i})}persist()}
+function novoFin(tipo){show('financeiro');limparFin();$('ft').value=tipo;$('fd').value=today();toggleComb();$('fx').focus()}
+function limparFin(){$('finForm').reset();$('fid').value='';$('fd').value=today();$('ft').value='entrada';toggleComb()}
+function toggleComb(){let x=$('ft').value==='combustivel';$('litrosBox').style.display=x?'block':'none';$('precoBox').style.display=x?'block':'none';if(x)$('fcat').value='Combustível'}
+function calcComb(){if($('ft').value==='combustivel'){let l=Number($('fl').value||0),p=Number($('fp').value||0);if(l&&p)$('fv').value=(l*p).toFixed(2)}}
+$('finForm').onsubmit=e=>{e.preventDefault();calcComb();let i=$('fid').value||uid(),t=$('ft').value,x={id:i,tipo:t,data:$('fd').value,desc:$('fx').value.trim(),valor:Number($('fv').value||0),litros:Number($('fl').value||0),preco:Number($('fp').value||0),veiculo:$('fvcl').value.trim(),categoria:$('fcat').value,pag:$('fpg').value,obs:$('fo').value.trim()},n=db.financeiro.findIndex(a=>a.id===i);n>=0?db.financeiro[n]=x:db.financeiro.push(x);limparFin();persist()}
+function renderFin(){let q=($('fBusca')?.value||'').toLowerCase();let a=[...db.financeiro].filter(x=>(x.desc+' '+x.tipo+' '+(x.categoria||'')+' '+(x.veiculo||'')).toLowerCase().includes(q)).sort((x,y)=>y.data.localeCompare(x.data));$('ftab').innerHTML=a.length?a.map(x=>{let det=x.tipo==='combustivel'?`${x.litros||0} L • ${x.preco?brl(x.preco)+'/L':'—'} • ${esc(x.veiculo||'')}`:`${esc(x.categoria||'')} • ${esc(x.pag||'')}`;return `<tr><td>${x.data}</td><td>${x.tipo==='entrada'?'Entrada':x.tipo==='saida'?'Saída':'Combustível'}</td><td>${esc(x.desc)}</td><td class="${x.tipo==='entrada'?'green':'red'}">${x.tipo==='entrada'?'+':'−'} ${brl(x.valor)}</td><td>${det}</td><td><button onclick="editFin('${x.id}')">Editar</button> <button class="danger" onclick="removeItem('financeiro','${x.id}')">Excluir</button></td></tr>`}).join(''):'<tr><td colspan="6" class="empty">Nenhum lançamento.</td></tr>';let e=total('entrada'),s=total('saida'),c=total('combustivel');$('fE').textContent=brl(e);$('fS').textContent=brl(s);$('fC').textContent=brl(c);$('fR').textContent=brl(e-s)}
+function editFin(i){let x=db.financeiro.find(a=>a.id===i);show('financeiro');$('fid').value=i;$('ft').value=x.tipo;$('fd').value=x.data;$('fx').value=x.desc;$('fv').value=x.valor;$('fl').value=x.litros||'';$('fp').value=x.preco||'';$('fvcl').value=x.veiculo||'';$('fcat').value=x.categoria||'Outro';$('fpg').value=x.pag||'Pix';$('fo').value=x.obs||'';toggleComb()}
+function novoTarefa(){show('tarefas');limparTarefa();$('tt').focus()}
+function limparTarefa(){$('taskForm').reset();$('tid').value='';$('tp').value='Normal'}
+$('taskForm').onsubmit=e=>{e.preventDefault();let i=$('tid').value||uid(),x={id:i,titulo:$('tt').value.trim(),data:$('td').value,prior:$('tp').value,obs:$('to').value.trim(),done:false},old=db.tarefas.find(a=>a.id===i);if(old)x.done=old.done;let n=db.tarefas.findIndex(a=>a.id===i);n>=0?db.tarefas[n]=x:db.tarefas.push(x);limparTarefa();persist()}
+function renderTasks(){$('ttab').innerHTML=db.tarefas.length?[...db.tarefas].sort((a,b)=>(a.done-b.done)||(a.data||'').localeCompare(b.data||'')).map(x=>`<tr><td><input class="check" type="checkbox" ${x.done?'checked':''} onchange="toggleTask('${x.id}')"></td><td>${esc(x.titulo)}</td><td>${x.data||''}</td><td>${esc(x.prior)}</td><td>${x.done?'Concluída':'Pendente'}</td><td><button onclick="editTask('${x.id}')">Editar</button> <button class="danger" onclick="removeItem('tarefas','${x.id}')">Excluir</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">Nenhuma tarefa.</td></tr>'}
+function editTask(i){let x=db.tarefas.find(a=>a.id===i);show('tarefas');$('tid').value=i;$('tt').value=x.titulo;$('td').value=x.data||'';$('tp').value=x.prior;$('to').value=x.obs||''}
+function toggleTask(i){let x=db.tarefas.find(a=>a.id===i);x.done=!x.done;persist()}
+function removeItem(t,i){if(confirm('Excluir este registro?')){db[t]=db[t].filter(x=>x.id!==i);persist()}}
+
+function mesAtual(){return new Date().toISOString().slice(0,7)}
+function mesEscolhido(){return $('mesSelecionado')?.value||mesAtual()}
+function resumoMes(m){
+ let a=db.financeiro.filter(x=>(x.data||'').slice(0,7)===m);
+ let e=a.filter(x=>x.tipo==='entrada').reduce((t,x)=>t+Number(x.valor||0),0);
+ let s=a.filter(x=>x.tipo==='saida').reduce((t,x)=>t+Number(x.valor||0),0);
+ let c=a.filter(x=>x.tipo==='combustivel').reduce((t,x)=>t+Number(x.valor||0),0);
+ return {e,s,c,r:e-s};
+}
+function renderMensal(){
+ let m=mesEscolhido(),r=resumoMes(m);
+ $('mesE').textContent=brl(r.e); $('mesS').textContent=brl(r.s);
+ $('mesC').textContent=brl(r.c); $('mesR').textContent=brl(r.r);
+ let [y,mo]=m.split('-');
+ $('periodoAtual').value=new Date(+y,+mo-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ let meses=[...new Set(db.financeiro.map(x=>(x.data||'').slice(0,7)).filter(Boolean))];
+ let cur=mesAtual(); if(!meses.includes(cur))meses.push(cur); meses.sort((a,b)=>b.localeCompare(a));
+ $('historicoMensal').innerHTML=meses.map(mo=>{
+   let x=resumoMes(mo),[yy,mm]=mo.split('-');
+   let nome=new Date(+yy,+mm-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+   nome=nome.charAt(0).toUpperCase()+nome.slice(1);
+   return `<tr><td><b>${nome}</b></td><td class="green">${brl(x.e)}</td><td class="red">${brl(x.s)}</td><td class="gold">${brl(x.c)}</td><td>${brl(x.r)}</td></tr>`;
+ }).join('')||'<tr><td colspan="5" class="empty">Nenhum lançamento financeiro.</td></tr>';
+}
+function renderHome(){let e=total('entrada'),s=total('saida'),c=total('combustivel');$('mClientes').textContent=db.clientes.filter(x=>x.status!=='Inativo').length;$('mServicos').textContent=db.agenda.filter(x=>x.data>=today()&&x.status!=='Cancelado'&&x.status!=='Concluído').length;$('mReceber').textContent=brl(db.agenda.filter(x=>x.status==='Agendado').reduce((a,x)=>a+Number(x.valor||0),0));$('mSaldo').textContent=brl(e-s);$('hE').textContent=brl(e);$('hS').textContent=brl(s);$('hC').textContent=brl(c);$('hR').textContent=brl(e-s);let a=db.agenda.filter(x=>x.data>=today()&&x.status==='Agendado').sort((x,y)=>(x.data+x.hora).localeCompare(y.data+y.hora)).slice(0,5);$('proximos').innerHTML=a.length?a.map(x=>`<div style="padding:10px 0;border-bottom:1px solid var(--line)"><b>${x.data} ${x.hora||''}</b> • ${esc(x.cliente)}<br><span>${esc(x.servico)} • ${brl(x.valor)}</span></div>`).join(''):'<span>Nenhum serviço próximo.</span>'}
+function gerarRelatorio(){let i=$('ri').value||'0000-01-01',f=$('rf').value||'9999-12-31';let fin=db.financeiro.filter(x=>x.data>=i&&x.data<=f),ag=db.agenda.filter(x=>x.data>=i&&x.data<=f);let e=fin.filter(x=>x.tipo==='entrada').reduce((a,x)=>a+x.valor,0),s=fin.filter(x=>x.tipo==='saida').reduce((a,x)=>a+x.valor,0),c=fin.filter(x=>x.tipo==='combustivel').reduce((a,x)=>a+x.valor,0);let litros=fin.filter(x=>x.tipo==='combustivel').reduce((a,x)=>a+(x.litros||0),0);$('relatorio').innerHTML=`<div class="grid"><div class="card"><span>Entradas</span><b class="green">${brl(e)}</b></div><div class="card"><span>Saídas</span><b class="red">${brl(s)}</b></div><div class="card"><span>Combustível</span><b class="gold">${brl(c)}</b></div><div class="card"><span>Saldo</span><b>${brl(e-s)}</b></div></div><div class="card"><h3>Atividade</h3><p>Serviços no período: <b>${ag.length}</b></p><p>Abastecimento: <b>${litros.toFixed(2)} litros</b></p><p>Lançamentos financeiros: <b>${fin.length}</b></p><button class="primary" onclick="imprimirRelatorio()">🖨 Imprimir / Salvar PDF</button></div>`}
+function imprimirRelatorio(){let w=window.open('','_blank');w.document.write('<html><head><title>Relatório Ednaldo Jardins</title></head><body>'+($('relatorio').innerHTML)+'<p>Gerado em '+new Date().toLocaleString('pt-BR')+'</p></body></html>');w.document.close();w.print()}
+function backup(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-ednaldo-jardins-'+today()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Backup exportado!')}
+function restore(ev){let file=ev.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.clientes||!x.agenda||!x.financeiro||!x.tarefas)throw Error();db=x;persist();alert('Backup restaurado com sucesso!')}catch(e){alert('Arquivo de backup inválido.')}};r.readAsText(file)}
+function clearAll(){if(confirm('ATENÇÃO: apagar clientes, agenda, financeiro e tarefas?')){db={clientes:[],agenda:[],financeiro:[],tarefas:[]};persist();toast('Dados apagados')}}
+function renderDados(){$('dadosInfo').innerHTML=`Clientes: <b>${db.clientes.length}</b> • Serviços: <b>${db.agenda.length}</b> • Lançamentos: <b>${db.financeiro.length}</b> • Tarefas: <b>${db.tarefas.length}</b>`}
+function renderRelDefaults(){if(!$('ri').value)$('ri').value=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10);if(!$('rf').value)$('rf').value=today();gerarRelatorio()}
+function renderAll(){
+  const ms=document.getElementById('mesServicos'); if(ms && !ms.value) ms.value=mesAtual();if($('mesSelecionado')&&!$('mesSelecionado').value)$('mesSelecionado').value=mesAtual();renderHome();renderMensal();
+  renderServicosMensais();renderClientes();renderAgenda();renderFin();renderTasks();renderDados();renderRelDefaults();toggleComb()}
+$('fd').value=today();$('ad').value=today();renderAll();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
+
+function mesServicosEscolhido(){
+  const el=document.getElementById('mesServicos');
+  return el && el.value ? el.value : mesAtual();
+}
+
+function renderServicosMensais(){
+  const m=mesServicosEscolhido();
+  const body=document.getElementById('servicosMensaisBody');
+  if(!body) return;
+  const servicos=(db.agenda||[])
+    .filter(a => (a.data||'').slice(0,7)===m)
+    .sort((a,b)=>((a.data||'')+(a.hora||'')).localeCompare((b.data||'')+(b.hora||'')));
+
+  const valor=servicos.reduce((s,a)=>s+(Number(a.valor)||0),0);
+  const q=document.getElementById('qtdServicosMes');
+  const v=document.getElementById('valorServicosMes');
+  if(q) q.textContent=servicos.length;
+  if(v) v.textContent=brl(valor);
+
+  body.innerHTML=servicos.length ? servicos.map(a=>`
+    <tr>
+      <td>${esc(a.data||'')}</td>
+      <td>${esc(a.hora||'')}</td>
+      <td>${esc(a.cliente||'')}</td>
+      <td>${esc(a.servico||'')}</td>
+      <td>${esc(a.status||'')}</td>
+      <td>${brl(Number(a.valor)||0)}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="6" class="muted">Nenhum serviço cadastrado neste mês.</td></tr>';
+}
+
+</script>
+</body></html>
